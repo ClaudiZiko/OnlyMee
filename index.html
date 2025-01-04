@@ -36,8 +36,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            min-height: 80vh; /* Menggunakan tinggi minimal */
-            justify-content: center; /* Memposisikan konten di tengah */
+            height: 100vh; /* Memastikan halaman mengisi tinggi layar */
         }
 
         section {
@@ -51,7 +50,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* Memposisikan teks di tengah */
         }
 
         h1 {
@@ -60,31 +58,32 @@
             margin-bottom: 20px;
         }
 
-        .teka-button {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 15px 30px;
-            font-size: 1.5em;
-            cursor: pointer;
-            margin-top: 20px; /* Mengatur jarak atas tombol */
-            transition: background 0.3s ease;
-            animation: fadeIn 1s; /* Animasi pada tombol */
-        }
+        .tekan-button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 19px 50px;
+    font-size: 1.5em;
+    cursor: pointer;
+    margin-top: -30px; /* Nilai negatif untuk menaikkan tombol */
+    transition: background 0.5s ease;
+    animation: fadeIn 3s;
+    position: relative; /* Tambahkan posisi relatif */
+    z-index: 1; /* Agar tombol tetap terlihat di atas */
+}
 
-        .teka-button:hover {
+        .tekan-button:hover {
             background-color: #ff4757; /* Warna saat hover */
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 7698px) {
             h1 {
                 font-size: 2.5em; /* Ukuran font lebih kecil untuk ponsel */
             }
 
-            .teka-button {
+            .tekan-button {
                 font-size: 1.2em; /* Ukuran font lebih kecil untuk tombol */
-                padding: 10px 20px; /* Mengurangi padding tombol pada ponsel */
             }
         }
     </style>
@@ -96,12 +95,12 @@
             <p>AikGym adalah pusat kebugaran yang berlokasi di Jl. Bhayangkara No. 30. Misi kami adalah menyediakan lingkungan yang mendukung dan memotivasi anggota kami untuk mencapai tujuan kebugaran mereka.</p>
         </section>
 
-        <button class="teka-button" id="teka-button">Tekan untuk menuju halaman selanjutnya</button>
+        <button class="tekan-button" id="tekan-button">Tekan untuk menuju halaman selanjutnya</button>
     </main>
 
     <script>
         // Menambahkan event listener untuk tombol
-        document.getElementById('teka-button').addEventListener('click', function() {
+        document.getElementById('tekan-button').addEventListener('click', function() {
             window.location.href = 'gym1.html'; // Alihkan ke gym1.html
         });
     </script>
