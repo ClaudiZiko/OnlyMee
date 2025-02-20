@@ -1,13 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Music Style Player</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .music-player {
+            width: 100%;
+            max-width: 400px;
+            background-color: #1d1d1f;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+        }
+        h2, p {
+            text-align: center;
+        }
+        audio {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        .playlist {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .playlist li {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .playlist li:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="music-player">
+    <h2>Futuristic Music Player</h2>
+    <p>Enjoy your playlist from Google Drive!</p>
+
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h3>Playlist</h3>
+    <ul class="playlist" id="playlist"></ul>
+</div>
+
+<script src="https://apis.google.com/js/api.js"></script>
 <script>
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Ganti dengan API key yang valid
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // ID Folder yang benar
+    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';
+    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';
 
     function loadClient() {
         gapi.client.setApiKey(API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
             .then(function () {
                 console.log("GAPI client loaded for API");
-                listFiles();  // Panggil fungsi untuk mengambil daftar file
+                listFiles();
             }, function (error) {
                 console.error("Error loading GAPI client", error);
             });
@@ -20,7 +89,6 @@
         }).then(function (response) {
             let files = response.result.files;
             if (files && files.length > 0) {
-                console.log("Files found:", files);
                 createPlaylist(files);
             } else {
                 console.log("No files found.");
@@ -30,7 +98,7 @@
 
     function createPlaylist(files) {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';  
+        playlist.innerHTML = '';
         files.forEach(function (file) {
             let li = document.createElement('li');
             li.textContent = file.name;
@@ -51,3 +119,6 @@
 
     gapi.load("client", loadClient);
 </script>
+
+</body>
+</html>
