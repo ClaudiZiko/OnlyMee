@@ -90,49 +90,58 @@
 
 <script src="https://apis.google.com/js/api.js"></script>
 <script>
-    // API key and client ID yang benar
     let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
     let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Your API Key
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Correct Folder ID
+    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Folder ID
     let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
     function loadClient() {
+        console.log("Loading client...");
         gapi.client.setApiKey(API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
             .then(function() {
+                console.log("Client loaded successfully.");
                 listFiles();
             }, function(error) {
-                console.error("Error loading GAPI client", error);
+                console.error("Error loading GAPI client:", error);
             });
     }
 
     function authenticate() {
+        console.log("Authenticating...");
         return gapi.auth2.getAuthInstance()
             .signIn({scope: SCOPES})
             .then(function() {
+                console.log("Authenticated successfully.");
                 loadClient();
             }, function(error) {
-                console.error("Error signing in", error);
+                console.error("Error signing in:", error);
             });
     }
 
     function initApi() {
+        console.log("Initializing API...");
         gapi.load("client:auth2", function() {
             gapi.auth2.init({client_id: CLIENT_ID});
+            console.log("API Initialized");
         });
     }
 
     function listFiles() {
+        console.log("Listing files in folder...");
         gapi.client.drive.files.list({
             q: `'${FOLDER_ID}' in parents`,
             fields: 'files(id, name, mimeType)',
         }).then(function(response) {
             let files = response.result.files;
+            console.log("Files found:", files);  // Add this log to see files
             if (files && files.length > 0) {
                 createPlaylist(files);
             } else {
                 console.log("No files found.");
             }
+        }, function(error) {
+            console.error("Error listing files:", error);  // Add this log to catch errors
         });
     }
 
@@ -140,7 +149,8 @@
         let playlist = document.getElementById('playlist');
         playlist.innerHTML = '';  // Clear any existing playlist
         files.forEach(function(file) {
-            if (file.mimeType === 'audio/mpeg') {  // Only show mp3 files
+            console.log('File details:', file);  // Check each file details
+            if (file.mimeType === 'audio/mpeg') {  // Only display mp3 files
                 let li = document.createElement('li');
                 li.textContent = file.name;
                 li.onclick = function() {
