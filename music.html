@@ -2,114 +2,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Music Style Player</title>
+    <title>Music Player</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        * {
             margin: 0;
-            overflow: hidden;
-        }
-        .music-player {
-            width: 100%;
-            max-width: 400px;
-            background-color: #1d1d1f;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-        }
-        h2, p {
-            text-align: center;
-        }
-        audio {
-            width: 100%;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-        .playlist {
-            list-style-type: none;
             padding: 0;
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .playlist li {
-            cursor: pointer;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .playlist li:hover {
-            background-color: #444;
-        }
-    </style>
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }body {
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(255, 0, 150, 0.5));
+        animation: pulse 3s infinite alternate;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .phone-container {
+        width: 320px;
+        height: 550px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    h1 {
+        color: white;
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    .music-list {
+        margin-top: 20px;
+        list-style: none;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .music-list li {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .music-list li:hover {
+        background: rgba(255, 0, 150, 0.7);
+        transform: scale(1.05);
+    }
+
+    audio {
+        width: 100%;
+        margin-top: 20px;
+    }
+</style>
+
 </head>
-<body><div class="music-player">
-    <h2>Futuristic Music Player</h2>
-    <p>Enjoy your playlist from Google Drive!</p><audio id="audioPlayer" controls>
-    <source id="audioSource" src="" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+<body><div class="background"></div>
 
-<h3>Playlist</h3>
-<ul class="playlist" id="playlist"></ul>
+<div class="phone-container">
+    <h1>🎵 My Playlist</h1>
+    <ul class="music-list" id="playlist">
+        <!-- Playlist akan diisi secara dinamis -->
+    </ul>
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</div>
 
-</div><script src="https://apis.google.com/js/api.js"></script><script>
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';
+<script>
+    const playlist = [
+        { name: "Song 1", url: "song1.mp3" },
+        { name: "Song 2", url: "song2.mp3" },
+        { name: "Song 3", url: "song3.mp3" }
+    ];
 
-    function loadClient() {
-        gapi.client.setApiKey(API_KEY);
-        return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
-            .then(function () {
-                console.log("GAPI client loaded for API");
-                listFiles();
-            }, function (error) {
-                console.error("Error loading GAPI client", error);
-            });
-    }
+    const playlistElement = document.getElementById("playlist");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioSource = document.getElementById("audioSource");
 
-    function listFiles() {
-        gapi.client.drive.files.list({
-            q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`,
-            fields: 'files(id, name)',
-        }).then(function (response) {
-            let files = response.result.files;
-            if (files && files.length > 0) {
-                createPlaylist(files);
-            } else {
-                console.log("No files found.");
-            }
-        });
-    }
+    playlist.forEach(song => {
+        let li = document.createElement("li");
+        li.textContent = song.name;
+        li.onclick = function () {
+            audioSource.src = song.url;
+            audioPlayer.load();
+            audioPlayer.play();
+        };
+        playlistElement.appendChild(li);
+    });
+</script>
 
-    function createPlaylist(files) {
-        let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';
-        files.forEach(function (file) {
-            let li = document.createElement('li');
-            li.textContent = file.name;
-            li.onclick = function () {
-                loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
-            };
-            playlist.appendChild(li);
-        });
-    }
-
-    function loadMusic(url) {
-        let player = document.getElementById('audioPlayer');
-        let source = document.getElementById('audioSource');
-        source.src = url;
-        player.load();
-        player.play();
-    }
-
-    gapi.load("client", loadClient);
-</script></body>
+</body>
 </html>
