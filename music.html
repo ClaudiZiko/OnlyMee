@@ -1,162 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic Music Player</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: url('IMG_20250220_234820.png') no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .music-player {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-            transition: transform 0.3s ease;
-        }
-        h2 {
-            text-align: center;
-            font-size: 28px;
-            margin: 10px 0;
-            color: #fff;
-        }
-        p {
-            text-align: center;
-            font-size: 16px;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-        audio {
-            width: 100%;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-        .controls button {
-            background-color: #3a3a3c;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            margin: 0 15px;
-            cursor: pointer;
-        }
-        .playlist {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-        .playlist li {
-            cursor: pointer;
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #333;
-            border-radius: 15px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="music-player">
-    <h2>Futuristic Music Player</h2>
-    <p>Enjoy your playlist ♥️</p>
-
-    <audio id="audioPlayer" controls>
-        <source id="audioSource" src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <div class="controls">
-        <button onclick="playMusic()">Play</button>
-        <button onclick="pauseMusic()">Pause</button>
-    </div>
-
-    <h3>Playlist</h3>
-    <ul class="playlist" id="playlist">
-        <!-- Playlist will be dynamically generated here -->
-    </ul>
-</div>
-
-<script src="https://apis.google.com/js/api.js"></script>
 <script>
-    let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Your API Key
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Folder ID
-    let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Ganti dengan API key yang valid
+    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // ID Folder yang benar
 
     function loadClient() {
-        console.log("Loading client...");
         gapi.client.setApiKey(API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
-            .then(function() {
-                console.log("Client loaded successfully.");
-                listFiles();
-            }, function(error) {
-                console.error("Error loading GAPI client:", error);
+            .then(function () {
+                console.log("GAPI client loaded for API");
+                listFiles();  // Panggil fungsi untuk mengambil daftar file
+            }, function (error) {
+                console.error("Error loading GAPI client", error);
             });
-    }
-
-    function authenticate() {
-        console.log("Authenticating...");
-        return gapi.auth2.getAuthInstance()
-            .signIn({scope: SCOPES})
-            .then(function() {
-                console.log("Authenticated successfully.");
-                loadClient();
-            }, function(error) {
-                console.error("Error signing in:", error);
-            });
-    }
-
-    function initApi() {
-        console.log("Initializing API...");
-        gapi.load("client:auth2", function() {
-            gapi.auth2.init({client_id: CLIENT_ID});
-            console.log("API Initialized");
-        });
     }
 
     function listFiles() {
-        console.log("Listing files in folder...");
         gapi.client.drive.files.list({
-            q: `'${FOLDER_ID}' in parents`,
-            fields: 'files(id, name, mimeType)',
-        }).then(function(response) {
+            q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`,
+            fields: 'files(id, name)',
+        }).then(function (response) {
             let files = response.result.files;
-            console.log("Files found:", files);  // Add this log to see files
             if (files && files.length > 0) {
+                console.log("Files found:", files);
                 createPlaylist(files);
             } else {
                 console.log("No files found.");
             }
-        }, function(error) {
-            console.error("Error listing files:", error);  // Add this log to catch errors
         });
     }
 
     function createPlaylist(files) {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';  // Clear any existing playlist
-        files.forEach(function(file) {
-            console.log('File details:', file);  // Check each file details
-            if (file.mimeType === 'audio/mpeg') {  // Only display mp3 files
-                let li = document.createElement('li');
-                li.textContent = file.name;
-                li.onclick = function() {
-                    loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
-                };
-                playlist.appendChild(li);
-            }
+        playlist.innerHTML = '';  
+        files.forEach(function (file) {
+            let li = document.createElement('li');
+            li.textContent = file.name;
+            li.onclick = function () {
+                loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
+            };
+            playlist.appendChild(li);
         });
     }
 
@@ -168,18 +49,5 @@
         player.play();
     }
 
-    function playMusic() {
-        const player = document.getElementById('audioPlayer');
-        player.play();
-    }
-
-    function pauseMusic() {
-        const player = document.getElementById('audioPlayer');
-        player.pause();
-    }
-
-    authenticate();
+    gapi.load("client", loadClient);
 </script>
-
-</body>
-</html>
