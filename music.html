@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apple Music Style Player</title>
     <style>
+        /* General body style */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #121212;
+            background-color: #121212; /* Dark background to match Apple Music */
             color: #fff;
             display: flex;
             justify-content: center;
@@ -16,22 +17,74 @@
             margin: 0;
             overflow: hidden;
         }
+
+        /* Music Player Container */
         .music-player {
             width: 100%;
             max-width: 400px;
-            background-color: #1d1d1f;
+            background-color: #1d1d1f; /* Dark gray background */
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease;
         }
-        h2, p {
+
+        /* Header style */
+        h2 {
             text-align: center;
+            font-size: 28px;
+            margin: 10px 0;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
         }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+
+        /* Audio Player */
         audio {
             width: 100%;
             border-radius: 15px;
             margin-top: 20px;
+            background-color: transparent;
+            transition: all 0.3s ease;
         }
+
+        audio:hover {
+            transform: scale(1.05);
+        }
+
+        /* Controls Section */
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .controls button {
+            background-color: #3a3a3c;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin: 0 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background-color: #ff5a5f; /* Red like Apple Music */
+            transform: scale(1.1);
+        }
+
+        /* Playlist Section */
         .playlist {
             list-style-type: none;
             padding: 0;
@@ -39,16 +92,37 @@
             max-height: 200px;
             overflow-y: auto;
         }
+
         .playlist li {
             cursor: pointer;
-            padding: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
             background-color: #333;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
         }
+
         .playlist li:hover {
             background-color: #444;
+            transform: scale(1.05);
         }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .music-player {
+            animation: fadeIn 0.8s ease-out;
+        }
+
     </style>
 </head>
 <body>
@@ -57,38 +131,71 @@
     <h2>Futuristic Music Player</h2>
     <p>Enjoy your playlist from Google Drive!</p>
 
+    <!-- Audio player -->
     <audio id="audioPlayer" controls>
         <source id="audioSource" src="" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
+    <div class="controls">
+        <button onclick="playMusic()">Play</button>
+        <button onclick="pauseMusic()">Pause</button>
+    </div>
+
     <h3>Playlist</h3>
-    <ul class="playlist" id="playlist"></ul>
+    <ul class="playlist" id="playlist">
+        <!-- Playlist will be dynamically generated here -->
+    </ul>
 </div>
 
+<!-- Google API Client Script -->
 <script src="https://apis.google.com/js/api.js"></script>
 <script>
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';
+    let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
+    let API_KEY = 'YOUR_API_KEY';  // Replace with your API Key
+    let FOLDER_ID = '1J3BYeZCl16zfNqo9CVI1EQ2XCYMSzkAL';  // The folder ID from the link you provided
+    let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
+    // Load the API client and auth2 library
     function loadClient() {
         gapi.client.setApiKey(API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
-            .then(function () {
+            .then(function() {
                 console.log("GAPI client loaded for API");
-                listFiles();
-            }, function (error) {
+                listFiles();  // Call the function to list files in the folder
+            }, function(error) {
                 console.error("Error loading GAPI client", error);
             });
     }
 
+    // Authenticate the user
+    function authenticate() {
+        return gapi.auth2.getAuthInstance()
+            .signIn({scope: SCOPES})
+            .then(function() {
+                console.log("Sign-in successful");
+                loadClient();
+            }, function(error) {
+                console.error("Error signing in", error);
+            });
+    }
+
+    // Initialize the API client
+    function initApi() {
+        gapi.load("client:auth2", function() {
+            gapi.auth2.init({client_id: CLIENT_ID});
+        });
+    }
+
+    // List files in the folder
     function listFiles() {
         gapi.client.drive.files.list({
-            q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`,
-            fields: 'files(id, name)',
-        }).then(function (response) {
+            q: `'${FOLDER_ID}' in parents`,
+            fields: 'files(id, name, mimeType)',
+        }).then(function(response) {
             let files = response.result.files;
             if (files && files.length > 0) {
+                console.log("Files found:", files);
                 createPlaylist(files);
             } else {
                 console.log("No files found.");
@@ -96,19 +203,23 @@
         });
     }
 
+    // Create the playlist dynamically
     function createPlaylist(files) {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';
-        files.forEach(function (file) {
-            let li = document.createElement('li');
-            li.textContent = file.name;
-            li.onclick = function () {
-                loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
-            };
-            playlist.appendChild(li);
+        playlist.innerHTML = ''; // Clear the existing list
+        files.forEach(function(file) {
+            if (file.mimeType === 'audio/mpeg') {
+                let li = document.createElement('li');
+                li.textContent = file.name;
+                li.onclick = function() {
+                    loadMusic(`https://drive.google.com/uc?export=view&id=${file.id}`);
+                };
+                playlist.appendChild(li);
+            }
         });
     }
 
+    // Load and play the music
     function loadMusic(url) {
         let player = document.getElementById('audioPlayer');
         let source = document.getElementById('audioSource');
@@ -117,7 +228,21 @@
         player.play();
     }
 
-    gapi.load("client", loadClient);
+    // Play music
+    function playMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.play();
+    }
+
+    // Pause music
+    function pauseMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.pause();
+    }
+
+    // Run the authentication and API initialization process
+    authenticate();
+
 </script>
 
 </body>
