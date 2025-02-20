@@ -69,7 +69,7 @@
 <body>
 
 <div class="music-player">
-    <h2>Music Player</h2>
+    <h2>Futuristic Music Player</h2>
     <p>Enjoy your playlist ♥️</p>
 
     <audio id="audioPlayer" controls>
@@ -90,10 +90,10 @@
 
 <script src="https://apis.google.com/js/api.js"></script>
 <script>
-    // Use your actual API key, client ID, and folder ID here
+    // API key and client ID yang benar
     let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Replace with your API Key
-    let FOLDER_ID = '1J3BYeZCl16zfNqo9CVI1EQ2XCYMSzkAL';  // The folder ID from the link you provided
+    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Your API Key
+    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Correct Folder ID
     let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
     function loadClient() {
@@ -138,9 +138,9 @@
 
     function createPlaylist(files) {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = ''; 
+        playlist.innerHTML = '';  // Clear any existing playlist
         files.forEach(function(file) {
-            if (file.mimeType === 'audio/mpeg') {
+            if (file.mimeType === 'audio/mpeg') {  // Only show mp3 files
                 let li = document.createElement('li');
                 li.textContent = file.name;
                 li.onclick = function() {
