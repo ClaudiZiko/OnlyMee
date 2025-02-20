@@ -182,13 +182,13 @@
 
         function createPlaylist(files) {
             let playlist = document.getElementById('playlist');
-            playlist.innerHTML = ''; // Clear the existing list
+            playlist.innerHTML = '';  // Clear the existing list
             files.forEach(function(file) {
-                if (file.mimeType === 'audio/mpeg') {  
+                if (file.mimeType === 'audio/mpeg') {
                     let li = document.createElement('li');
                     li.textContent = file.name;
-                    li.onclick = function() {
-                        loadMusic(`https://drive.google.com/uc?export=view&id=${file.id}`);
+                    li.onclick = function () {
+                        loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
                     };
                     playlist.appendChild(li);
                 }
