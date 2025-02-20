@@ -19,7 +19,7 @@
         }
         .music-player {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 20px;
@@ -28,7 +28,7 @@
         }
         h2 {
             text-align: center;
-            font-size: 28px;
+            font-size: 30px;
             margin: 10px 0;
             color: #fff;
         }
@@ -56,13 +56,19 @@
             list-style-type: none;
             padding: 0;
             margin-top: 20px;
+            max-height: 200px;
+            overflow-y: scroll;
         }
         .playlist li {
             cursor: pointer;
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #333;
-            border-radius: 15px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .playlist li:hover {
+            background-color: #555;
         }
     </style>
 </head>
@@ -77,6 +83,11 @@
         Your browser does not support the audio element.
     </audio>
 
+    <div class="controls">
+        <button onclick="playMusic()">Play</button>
+        <button onclick="pauseMusic()">Pause</button>
+    </div>
+
     <h3>Playlist</h3>
     <ul class="playlist" id="playlist">
         <!-- Playlist will be dynamically generated here -->
@@ -86,12 +97,12 @@
 <script src="https://apis.google.com/js/api.js"></script>
 <script>
     // Replace these with your actual values
-    const CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';
-    const API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';
-    const FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';
+    const CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
+    const API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Your API Key
+    const FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Your Folder ID
     const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
-    // Initialize the API client
+    // Initialize the Google API client
     function loadClient() {
         gapi.client.setApiKey(API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
@@ -102,6 +113,7 @@
             });
     }
 
+    // Authenticate with Google API
     function authenticate() {
         return gapi.auth2.getAuthInstance()
             .signIn({scope: SCOPES})
@@ -118,13 +130,14 @@
         });
     }
 
+    // Function to list files from Google Drive folder
     function listFiles() {
         gapi.client.drive.files.list({
             q: `'${FOLDER_ID}' in parents`,
             fields: 'files(id, name, mimeType)',
         }).then(function(response) {
             let files = response.result.files;
-            console.log("Files: ", files);  // Check what files are returned
+            console.log("Files: ", files); // Check the files returned
             if (files && files.length > 0) {
                 createPlaylist(files);
             } else {
@@ -135,9 +148,10 @@
         });
     }
 
+    // Function to generate the playlist
     function createPlaylist(files) {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';  // Clear any existing playlist
+        playlist.innerHTML = ''; // Clear existing playlist
         files.forEach(function(file) {
             if (file.mimeType === 'audio/mpeg') {
                 let li = document.createElement('li');
@@ -150,6 +164,7 @@
         });
     }
 
+    // Function to load and play selected music
     function loadMusic(url) {
         let player = document.getElementById('audioPlayer');
         let source = document.getElementById('audioSource');
@@ -158,7 +173,19 @@
         player.play();
     }
 
-    // Authenticate and load the client
+    // Play the music
+    function playMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.play();
+    }
+
+    // Pause the music
+    function pauseMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.pause();
+    }
+
+    // Authenticate and load client
     authenticate();
 </script>
 
