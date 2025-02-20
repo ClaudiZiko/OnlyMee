@@ -3,275 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic Music Player</title>
+    <title>Apple Music Style Player</title>
     <style>
+        /* General body style */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;  /* Dark background matching with home page */
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Dark background to match Apple Music */
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-
-        .player-container {
-            width: 360px;
-            height: 640px;
-            background: #1a1a1a; /* Dark background */
-            border-radius: 30px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
+            margin: 0;
             overflow: hidden;
-            position: relative;
-            padding: 20px;
-            transform: scale(1);
-            transition: transform 0.8s ease;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            color: #00ff00;  /* Neon green for a futuristic feel */
-            margin-bottom: 10px;
-        }
-
-        .audio-player {
+        /* Music Player Container */
+        .music-player {
             width: 100%;
-            height: 100%;
-            background-color: #000;  /* Matching dark background */
+            max-width: 400px;
+            background-color: #1d1d1f; /* Dark gray background */
+            padding: 20px;
             border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease;
         }
 
-        .album-art {
-            width: 250px;
-            height: 250px;
-            background: #333;
-            border-radius: 50%;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 50px;
+        /* Header style */
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            margin: 10px 0;
             color: #fff;
-            transition: transform 1s ease-in-out;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
         }
 
+        p {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+
+        /* Audio Player */
+        audio {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        audio:hover {
+            transform: scale(1.05);
+        }
+
+        /* Controls Section */
         .controls {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
+            justify-content: center;
             margin-top: 20px;
         }
 
         .controls button {
-            background: #1db954;  /* Neon green button color */
-            border: none;
-            border-radius: 50%;
+            background-color: #3a3a3c;
             color: #fff;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin: 0 15px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .controls button:hover {
+            background-color: #ff5a5f; /* Red like Apple Music */
             transform: scale(1.1);
         }
 
-        .music-list {
+        /* Playlist Section */
+        .playlist {
             list-style-type: none;
             padding: 0;
-            text-align: center;
             margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .music-item {
-            padding: 10px;
-            background-color: #333;  /* Dark background matching */
-            border-radius: 10px;
-            margin: 10px 0;
+        .playlist li {
             cursor: pointer;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 15px;
             transition: background-color 0.3s ease;
-            transform: scale(1);
         }
 
-        .music-item:hover {
-            background-color: #444;  /* Slight hover effect */
+        .playlist li:hover {
+            background-color: #444;
             transform: scale(1.05);
         }
 
-        audio {
-            display: none;
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
+        .music-player {
+            animation: fadeIn 0.8s ease-out;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="player-container">
-        <div class="header">
-            <h1>Futuristic Music Player</h1>
-        </div>
-        <div class="audio-player">
-            <div class="album-art" id="albumArt">
-                🎶
-            </div>
-            <audio id="audioPlayer" controls></audio>
-            <div class="controls">
-                <button id="prevBtn">⏮️</button>
-                <button id="playPauseBtn">▶️</button>
-                <button id="nextBtn">⏭️</button>
-            </div>
-            <ul class="music-list" id="musicList"></ul>
-        </div>
+<div class="music-player">
+    <h2>Futuristic Music Player</h2>
+    <p>Enjoy your playlist from Google Drive!</p>
+
+    <!-- Audio player -->
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="controls">
+        <button onclick="playMusic()">Play</button>
+        <button onclick="pauseMusic()">Pause</button>
     </div>
 
-    <script>
-        // Client ID dan API Key kamu
-        const CLIENT_ID = 'YOUR_CLIENT_ID';
-        const API_KEY = 'YOUR_API_KEY';
+    <h3>Playlist</h3>
+    <ul class="playlist" id="playlist">
+        <!-- Playlist will be dynamically generated here -->
+    </ul>
+</div>
 
-        // ID folder di Google Drive yang berisi musik
-        const FOLDER_ID = 'YOUR_FOLDER_ID';
+<!-- Google API Client Script -->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+    let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
+    let API_KEY = 'YOUR_API_KEY';  // Replace with your API Key
+    let FOLDER_ID = '1J3BYeZCl16zfNqo9CVI1EQ2XCYMSzkAL';  // The folder ID from the link you provided
+    let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
-        let audioPlayer = document.getElementById('audioPlayer');
-        let playPauseBtn = document.getElementById('playPauseBtn');
-        let prevBtn = document.getElementById('prevBtn');
-        let nextBtn = document.getElementById('nextBtn');
-        let musicListElement = document.getElementById('musicList');
-        let currentTrackIndex = 0;
-        let tracks = [];
-
-        function loadClient() {
-            gapi.load('client:auth2', initClient);
-        }
-
-        function initClient() {
-            gapi.client.init({
-                apiKey: API_KEY,
-                clientId: CLIENT_ID,
-                scope: 'https://www.googleapis.com/auth/drive.readonly',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-            }).then(() => {
-                listMusicFiles(); // Setelah client siap, daftar musik dimuat
+    // Load the API client and auth2 library
+    function loadClient() {
+        gapi.client.setApiKey(API_KEY);
+        return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
+            .then(function() {
+                console.log("GAPI client loaded for API");
+                listFiles();  // Call the function to list files in the folder
+            }, function(error) {
+                console.error("Error loading GAPI client", error);
             });
-        }
+    }
 
-        function listMusicFiles() {
-            gapi.auth2.getAuthInstance().signIn().then(() => {
-                gapi.client.drive.files.list({
-                    'q': `'${FOLDER_ID}' in parents`,
-                    'fields': 'files(id, name, mimeType)',
-                }).then((response) => {
-                    const files = response.result.files;
-                    if (files && files.length > 0) {
-                        files.forEach(file => {
-                            if (file.mimeType.includes('audio/')) {
-                                tracks.push(file);
-                                addMusicToList(file);
-                            }
-                        });
-                    }
-                });
+    // Authenticate the user
+    function authenticate() {
+        return gapi.auth2.getAuthInstance()
+            .signIn({scope: SCOPES})
+            .then(function() {
+                console.log("Sign-in successful");
+                loadClient();
+            }, function(error) {
+                console.error("Error signing in", error);
             });
-        }
+    }
 
-        function addMusicToList(file) {
-            const li = document.createElement('li');
-            li.classList.add('music-item');
-            li.textContent = file.name;
-            li.onclick = () => playMusic(file, tracks.indexOf(file));
-            musicListElement.appendChild(li);
-        }
+    // Initialize the API client
+    function initApi() {
+        gapi.load("client:auth2", function() {
+            gapi.auth2.init({client_id: CLIENT_ID});
+        });
+    }
 
-        function playMusic(file, index) {
-            currentTrackIndex = index;
-            audioPlayer.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
-            audioPlayer.play();
-            updateAlbumArt(file.name);
-        }
-
-        function updateAlbumArt(trackName) {
-            const albumArt = document.getElementById('albumArt');
-            albumArt.style.transition = 'transform 1s ease-in-out';
-            albumArt.style.transform = 'rotate(360deg)';
-            
-            setTimeout(() => {
-                albumArt.textContent = trackName.charAt(0).toUpperCase(); // Menampilkan huruf pertama nama lagu
-                albumArt.style.transition = 'none';
-                albumArt.style.transform = 'rotate(0deg)';
-            }, 1000);
-        }
-
-        function animateButton(button) {
-            button.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 300);
-        }
-
-        function addHoverEffectToMusicItems() {
-            const musicItems = document.querySelectorAll('.music-item');
-            musicItems.forEach(item => {
-                item.addEventListener('mouseenter', () => {
-                    item.style.transform = 'scale(1.05)';
-                    item.style.backgroundColor = '#444'; // Hover effect
-                });
-                item.addEventListener('mouseleave', () => {
-                    item.style.transform = 'scale(1)';
-                    item.style.backgroundColor = '#333';
-                });
-            });
-        }
-
-        playPauseBtn.onclick = function() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                playPauseBtn.textContent = '⏸️';
+    // List files in the folder
+    function listFiles() {
+        gapi.client.drive.files.list({
+            q: `'${FOLDER_ID}' in parents`,
+            fields: 'files(id, name, mimeType)',
+        }).then(function(response) {
+            let files = response.result.files;
+            if (files && files.length > 0) {
+                console.log("Files found:", files);
+                createPlaylist(files);
             } else {
-                audioPlayer.pause();
-                playPauseBtn.textContent = '▶️';
+                console.log("No files found.");
             }
-            animateButton(playPauseBtn);
-        };
+        });
+    }
 
-        prevBtn.onclick = function() {
-            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-            playMusic(tracks[currentTrackIndex], currentTrackIndex);
-            animateButton(prevBtn);
-        };
+    // Create the playlist dynamically
+    function createPlaylist(files) {
+        let playlist = document.getElementById('playlist');
+        playlist.innerHTML = ''; // Clear the existing list
+        files.forEach(function(file) {
+            if (file.mimeType === 'audio/mpeg') {
+                let li = document.createElement('li');
+                li.textContent = file.name;
+                li.onclick = function() {
+                    loadMusic(`https://drive.google.com/uc?export=view&id=${file.id}`);
+                };
+                playlist.appendChild(li);
+            }
+        });
+    }
 
-        nextBtn.onclick = function() {
-            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-            playMusic(tracks[currentTrackIndex], currentTrackIndex);
-            animateButton(nextBtn);
-        };
+    // Load and play the music
+    function loadMusic(url) {
+        let player = document.getElementById('audioPlayer');
+        let source = document.getElementById('audioSource');
+        source.src = url;
+        player.load();
+        player.play();
+    }
 
-        // Muat script Google API dan jalankan
-        (function() {
-            var script = document.createElement('script');
-            script.src = 'https://apis.google.com/js/api.js';
-            script.onload = loadClient;
-            document.body.appendChild(script);
-        })();
+    // Play music
+    function playMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.play();
+    }
 
-        // Animasi saat halaman dimuat
-        window.onload = function() {
-            animateButton(playPauseBtn);
-            addHoverEffectToMusicItems();
-        };
-    </script>
+    // Pause music
+    function pauseMusic() {
+        const player = document.getElementById('audioPlayer');
+        player.pause();
+    }
+
+    // Run the authentication and API initialization process
+    authenticate();
+
+</script>
 
 </body>
 </html>
