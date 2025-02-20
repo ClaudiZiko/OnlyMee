@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
+    <script src="https://apis.google.com/js/api.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,8 +14,7 @@
         }
 
         body {
-            background: url('IMG_20250220_234820.png') no-repeat center center fixed;
-            background-size: cover;
+            background: black;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,7 +26,9 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(255, 0, 150, 0.5));
+            background-image: url('IMG_20250220_234820.png'); /* Background Image */
+            background-size: cover; /* Menyesuaikan ukuran gambar */
+            background-position: center; /* Posisi gambar di tengah */
             animation: pulse 3s infinite alternate;
         }
 
@@ -82,41 +84,71 @@
     </style>
 </head>
 <body>
-<div class="background"></div>
+    <div class="background"></div>
 
-<div class="phone-container">
-    <h1>🎵 My Playlist</h1>
-    <ul class="music-list" id="playlist">
-        <!-- Playlist akan diisi secara dinamis -->
-    </ul>
-    <audio id="audioPlayer" controls>
-        <source id="audioSource" src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-</div>
+    <div class="phone-container">
+        <h1>🎵 My Playlist</h1>
+        <ul class="music-list" id="playlist">
+            <!-- Playlist akan diisi secara dinamis oleh API -->
+        </ul>
+        <audio id="audioPlayer" controls>
+            <source id="audioSource" src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
 
-<script>
-    const playlist = [
-        { name: "Song 1", url: "song1.mp3" },
-        { name: "Song 2", url: "song2.mp3" },
-        { name: "Song 3", url: "song3.mp3" }
-    ];
+    <script>
+        let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Ganti dengan API key yang valid
+        let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // ID Folder yang benar
 
-    const playlistElement = document.getElementById("playlist");
-    const audioPlayer = document.getElementById("audioPlayer");
-    const audioSource = document.getElementById("audioSource");
+        function loadClient() {
+            gapi.client.setApiKey(API_KEY);
+            return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
+                .then(function () {
+                    console.log("GAPI client loaded for API");
+                    listFiles();  // Panggil fungsi untuk mengambil daftar file
+                }, function (error) {
+                    console.error("Error loading GAPI client", error);
+                });
+        }
 
-    playlist.forEach(song => {
-        let li = document.createElement("li");
-        li.textContent = song.name;
-        li.onclick = function () {
-            audioSource.src = song.url;
-            audioPlayer.load();
-            audioPlayer.play();
-        };
-        playlistElement.appendChild(li);
-    });
-</script>
+        function listFiles() {
+            gapi.client.drive.files.list({
+                q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`,
+                fields: 'files(id, name)',
+            }).then(function (response) {
+                let files = response.result.files;
+                if (files && files.length > 0) {
+                    console.log("Files found:", files);
+                    createPlaylist(files);
+                } else {
+                    console.log("No files found.");
+                }
+            });
+        }
 
+        function createPlaylist(files) {
+            let playlist = document.getElementById('playlist');
+            playlist.innerHTML = '';  
+            files.forEach(function (file) {
+                let li = document.createElement('li');
+                li.textContent = file.name;
+                li.onclick = function () {
+                    loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
+                };
+                playlist.appendChild(li);
+            });
+        }
+
+        function loadMusic(url) {
+            let player = document.getElementById('audioPlayer');
+            let source = document.getElementById('audioSource');
+            source.src = url;
+            player.load();
+            player.play();
+        }
+
+        gapi.load("client", loadClient);
+    </script>
 </body>
 </html>
