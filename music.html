@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apple Music Style Player</title>
     <style>
-        /* General body style */
         body {
             font-family: 'Arial', sans-serif;
             background-image: url('https://example.com/path/to/your-image.jpg'); /* Ganti dengan URL gambar yang diinginkan */
-            background-size: cover; /* Agar gambar menutupi seluruh layar */
-            background-position: center; /* Agar gambar tetap berada di tengah */
-            background-attachment: fixed; /* Agar gambar tetap saat halaman digulir */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #fff;
             display: flex;
             justify-content: center;
@@ -21,18 +20,16 @@
             overflow: hidden;
         }
 
-        /* Music Player Container */
         .music-player {
             width: 100%;
             max-width: 400px;
-            background-color: rgba(29, 29, 31, 0.8); /* Background transparan agar gambar tetap terlihat */
+            background-color: rgba(29, 29, 31, 0.8); 
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-            transition: transform 0.3s ease;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        /* Header style */
         h2 {
             text-align: center;
             font-size: 28px;
@@ -50,20 +47,13 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
         }
 
-        /* Audio Player */
         audio {
             width: 100%;
             border-radius: 15px;
             margin-top: 20px;
             background-color: transparent;
-            transition: all 0.3s ease;
         }
 
-        audio:hover {
-            transform: scale(1.05);
-        }
-
-        /* Controls Section */
         .controls {
             display: flex;
             justify-content: center;
@@ -83,11 +73,10 @@
         }
 
         .controls button:hover {
-            background-color: #ff5a5f; /* Red like Apple Music */
+            background-color: #ff5a5f;
             transform: scale(1.1);
         }
 
-        /* Playlist Section */
         .playlist {
             list-style-type: none;
             padding: 0;
@@ -110,7 +99,6 @@
             transform: scale(1.05);
         }
 
-        /* Animations */
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -121,18 +109,12 @@
                 transform: translateY(0);
             }
         }
-
-        .music-player {
-            animation: fadeIn 0.8s ease-out;
-        }
-
     </style>
 </head>
 <body>
     <div class="music-player">
         <h2>Futuristic Music Player</h2>
         <p>Enjoy your playlist from Google Drive!</p>
-        <!-- Audio player -->
         <audio id="audioPlayer" controls>
             <source id="audioSource" src="" type="audio/mpeg">
             Your browser does not support the audio element.
@@ -147,29 +129,26 @@
         <ul class="playlist" id="playlist">
             <!-- Playlist will be dynamically generated here -->
         </ul>
-
     </div>
-    <!-- Google API Client Script -->
+
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
-        let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Replace with your API Key
-        let FOLDER_ID = '1J3BYeZCl16zfNqo9CVI1EQ2XCYMSzkAL';  // The folder ID from the link you provided
+        // Gunakan informasi asli kamu di sini
+        let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Client ID milikmu
+        let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';      // API Key milikmu
+        let FOLDER_ID = '1J3BYeZCl16zfNqo9CVI1EQ2XCYMSzkAL';  // Folder ID Google Drive milikmu
         let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
-        // Load the API client and auth2 library
         function loadClient() {
             gapi.client.setApiKey(API_KEY);
             return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
                 .then(function() {
-                    console.log("GAPI client loaded for API");
-                    listFiles();  // Call the function to list files in the folder
+                    listFiles();  // Call the function to list files
                 }, function(error) {
                     console.error("Error loading GAPI client", error);
                 });
         }
 
-        // Authenticate the user
         function authenticate() {
             return gapi.auth2.getAuthInstance()
                 .signIn({scope: SCOPES})
@@ -181,22 +160,19 @@
                 });
         }
 
-        // Initialize the API client
         function initApi() {
             gapi.load("client:auth2", function() {
                 gapi.auth2.init({client_id: CLIENT_ID});
             });
         }
 
-        // List files in the folder
         function listFiles() {
             gapi.client.drive.files.list({
-                q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`, // Filter by audio files
+                q: `'${FOLDER_ID}' in parents and mimeType contains 'audio'`,
                 fields: 'files(id, name, mimeType)',
             }).then(function(response) {
                 let files = response.result.files;
                 if (files && files.length > 0) {
-                    console.log("Files found:", files);
                     createPlaylist(files);
                 } else {
                     console.log("No files found.");
@@ -204,23 +180,21 @@
             });
         }
 
-        // Create the playlist dynamically
         function createPlaylist(files) {
             let playlist = document.getElementById('playlist');
             playlist.innerHTML = ''; // Clear the existing list
             files.forEach(function(file) {
-                if (file.mimeType === 'audio/mpeg') {  // Only include MP3 files
+                if (file.mimeType === 'audio/mpeg') {  
                     let li = document.createElement('li');
                     li.textContent = file.name;
                     li.onclick = function() {
-                        loadMusic(`https://drive.google.com/uc?export=view&id=${file.id}`);  // Use correct URL format
+                        loadMusic(`https://drive.google.com/uc?export=view&id=${file.id}`);
                     };
                     playlist.appendChild(li);
                 }
             });
         }
 
-        // Load and play the music
         function loadMusic(url) {
             let player = document.getElementById('audioPlayer');
             let source = document.getElementById('audioSource');
@@ -229,12 +203,19 @@
             player.play();
         }
 
-        // Play music
         function playMusic() {
             const player = document.getElementById('audioPlayer');
             player.play();
         }
 
-        // Pause music
         function pauseMusic() {
-            const player =
+            const player = document.getElementById('audioPlayer');
+            player.pause();
+        }
+
+        window.onload = function() {
+            authenticate();
+        };
+    </script>
+</body>
+</html>
