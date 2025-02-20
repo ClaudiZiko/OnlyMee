@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 1s ease-in-out;
+        }
+
+        .carousel-item {
+            width: 80%;
+            height: 70%;
+            margin: 0 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-item img, .carousel-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .carousel-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            z-index: 1;
+        }
+
+        .carousel-item .item-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-buttons button {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-buttons button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Animasi Slide */
+        .carousel-item.slide-left {
+            transform: translateX(-100%);
+            transition: transform 1s ease-in-out;
+        }
+
+        .carousel-item.slide-right {
+            transform: translateX(100%);
+            transition: transform 1s ease-in-out;
+        }
+
+        .carousel-item.active {
+            transform: translateX(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="carousel">
+        <div class="carousel-container" id="carousel-container">
+            <!-- Item will be added dynamically -->
+        </div>
+
+        <!-- Controls for previous and next -->
+        <div class="carousel-buttons">
+            <button onclick="prevSlide()">&#10094;</button>
+            <button onclick="nextSlide()">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        const files = [
+            'https://drive.google.com/uc?export=download&id=17R2HmTIIulTir2siyFfYHs5MO_zVsbXF', // MP4 1
+            'https://drive.google.com/uc?export=download&id=17YVRoqHVMbpJFmriXUR7QPxz3Fc8f54h', // PNG 1
+            'https://drive.google.com/uc?export=download&id=17Iy2v0rozyWRl-J0s-PygtoMiQ6FH7MG', // PNG 2
+            'https://drive.google.com/uc?export=download&id=17GL7lsQLFQWaropH5jPKT58jQBsHcM9X', // PNG 3
+            'https://drive.google.com/uc?export=download&id=17MZu7eS7WZqPyTjpm_-hHdUDHYUAEf10', // JPG 1
+            'https://drive.google.com/uc?export=download&id=17KVDpcuxCK8udDopxUOS5a23PD5ozrBk', // JPG 2
+            'https://drive.google.com/uc?export=download&id=17OaaKF3H2hmWEKD7ROnnwGAZX3G9FAIG'  // MP4 2
+        ];
+
+        let currentIndex = 0;
+
+        const carouselContainer = document.getElementById('carousel-container');
+
+        // Function to create carousel items
+        function createCarouselItems() {
+            files.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.classList.add('carousel-item');
+                if (index !== 0) item.classList.add('slide-left'); // Slide effect for all except first
+
+                const content = document.createElement('div');
+                content.classList.add('item-content');
+                
+                // Check if it's an image or video
+                if (file.endsWith('.mp4')) {
+                    const video = document.createElement('video');
+                    video.src = file;
+                    video.muted = true;
+                    video.controls = true;
+                    item.appendChild(video);
+                } else if (file.endsWith('.jpg') || file.endsWith('.png') || file.endsWith('.jpeg')) {
+                    const img = document.createElement('img');
+                    img.src = file;
+                    item.appendChild(img);
+                }
+                
+                carouselContainer.appendChild(item);
+            });
+            showActiveItem();
+        }
+
+        // Function to show active item in the carousel
+        function showActiveItem() {
+            const items = document.querySelectorAll('.carousel-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+                item.classList.add('slide-left'); // Reset slide animation
+            });
+            items[currentIndex].classList.add('active');
+            items[currentIndex].classList.remove('slide-left');
+        }
+
+        // Function to go to the next slide
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % files.length;
+            showActiveItem();
+        }
+
+        // Function to go to the previous slide
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + files.length) % files.length;
+            showActiveItem();
+        }
+
+        createCarouselItems(); // Initialize carousel items
+    </script>
+
+</body>
+</html>
