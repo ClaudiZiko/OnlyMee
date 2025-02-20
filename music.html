@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Music Player</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;  /* Dark background matching with home page */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .player-container {
+            width: 360px;
+            height: 640px;
+            background: #1a1a1a; /* Dark background */
+            border-radius: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+            transform: scale(1);
+            transition: transform 0.8s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #00ff00;  /* Neon green for a futuristic feel */
+            margin-bottom: 10px;
+        }
+
+        .audio-player {
+            width: 100%;
+            height: 100%;
+            background-color: #000;  /* Matching dark background */
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .album-art {
+            width: 250px;
+            height: 250px;
+            background: #333;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            color: #fff;
+            transition: transform 1s ease-in-out;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .controls button {
+            background: #1db954;  /* Neon green button color */
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .controls button:hover {
+            transform: scale(1.1);
+        }
+
+        .music-list {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .music-item {
+            padding: 10px;
+            background-color: #333;  /* Dark background matching */
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            transform: scale(1);
+        }
+
+        .music-item:hover {
+            background-color: #444;  /* Slight hover effect */
+            transform: scale(1.05);
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="player-container">
+        <div class="header">
+            <h1>Futuristic Music Player</h1>
+        </div>
+        <div class="audio-player">
+            <div class="album-art" id="albumArt">
+                🎶
+            </div>
+            <audio id="audioPlayer" controls></audio>
+            <div class="controls">
+                <button id="prevBtn">⏮️</button>
+                <button id="playPauseBtn">▶️</button>
+                <button id="nextBtn">⏭️</button>
+            </div>
+            <ul class="music-list" id="musicList"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Client ID dan API Key kamu
+        const CLIENT_ID = 'YOUR_CLIENT_ID';
+        const API_KEY = 'YOUR_API_KEY';
+
+        // ID folder di Google Drive yang berisi musik
+        const FOLDER_ID = 'YOUR_FOLDER_ID';
+
+        let audioPlayer = document.getElementById('audioPlayer');
+        let playPauseBtn = document.getElementById('playPauseBtn');
+        let prevBtn = document.getElementById('prevBtn');
+        let nextBtn = document.getElementById('nextBtn');
+        let musicListElement = document.getElementById('musicList');
+        let currentTrackIndex = 0;
+        let tracks = [];
+
+        function loadClient() {
+            gapi.load('client:auth2', initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/drive.readonly',
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+            }).then(() => {
+                listMusicFiles(); // Setelah client siap, daftar musik dimuat
+            });
+        }
+
+        function listMusicFiles() {
+            gapi.auth2.getAuthInstance().signIn().then(() => {
+                gapi.client.drive.files.list({
+                    'q': `'${FOLDER_ID}' in parents`,
+                    'fields': 'files(id, name, mimeType)',
+                }).then((response) => {
+                    const files = response.result.files;
+                    if (files && files.length > 0) {
+                        files.forEach(file => {
+                            if (file.mimeType.includes('audio/')) {
+                                tracks.push(file);
+                                addMusicToList(file);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function addMusicToList(file) {
+            const li = document.createElement('li');
+            li.classList.add('music-item');
+            li.textContent = file.name;
+            li.onclick = () => playMusic(file, tracks.indexOf(file));
+            musicListElement.appendChild(li);
+        }
+
+        function playMusic(file, index) {
+            currentTrackIndex = index;
+            audioPlayer.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
+            audioPlayer.play();
+            updateAlbumArt(file.name);
+        }
+
+        function updateAlbumArt(trackName) {
+            const albumArt = document.getElementById('albumArt');
+            albumArt.style.transition = 'transform 1s ease-in-out';
+            albumArt.style.transform = 'rotate(360deg)';
+            
+            setTimeout(() => {
+                albumArt.textContent = trackName.charAt(0).toUpperCase(); // Menampilkan huruf pertama nama lagu
+                albumArt.style.transition = 'none';
+                albumArt.style.transform = 'rotate(0deg)';
+            }, 1000);
+        }
+
+        function animateButton(button) {
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function addHoverEffectToMusicItems() {
+            const musicItems = document.querySelectorAll('.music-item');
+            musicItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.transform = 'scale(1.05)';
+                    item.style.backgroundColor = '#444'; // Hover effect
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'scale(1)';
+                    item.style.backgroundColor = '#333';
+                });
+            });
+        }
+
+        playPauseBtn.onclick = function() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseBtn.textContent = '⏸️';
+            } else {
+                audioPlayer.pause();
+                playPauseBtn.textContent = '▶️';
+            }
+            animateButton(playPauseBtn);
+        };
+
+        prevBtn.onclick = function() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            playMusic(tracks[currentTrackIndex], currentTrackIndex);
+            animateButton(prevBtn);
+        };
+
+        nextBtn.onclick = function() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            playMusic(tracks[currentTrackIndex], currentTrackIndex);
+            animateButton(nextBtn);
+        };
+
+        // Muat script Google API dan jalankan
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/api.js';
+            script.onload = loadClient;
+            document.body.appendChild(script);
+        })();
+
+        // Animasi saat halaman dimuat
+        window.onload = function() {
+            animateButton(playPauseBtn);
+            addHoverEffectToMusicItems();
+        };
+    </script>
+
+</body>
+</html>
