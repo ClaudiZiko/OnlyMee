@@ -28,14 +28,17 @@
             flex-direction: column;
         }
         .playlist-container {
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px 0;
-        }
-        .playlist {
-            display: flex;
-            gap: 10px;
-        }
+    max-height: 300px;  /* Batas tinggi area playlist */
+    overflow-y: auto;   /* Memungkinkan scroll vertikal */
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.playlist {
+    display: flex;
+    flex-direction: column;  /* Menampilkan playlist vertikal */
+    gap: 10px;
+}
         .playlist li {
             cursor: pointer;
             padding: 15px;
