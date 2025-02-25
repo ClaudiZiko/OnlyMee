@@ -59,6 +59,9 @@
             border-radius: 50px;
             cursor: pointer;
         }
+        #player {
+            display: none; /* Menyembunyikan video */
+        }
     </style>
 </head>
 <body>
@@ -73,31 +76,45 @@
         </ul>
     </div>
 
-    <audio id="audioPlayer" controls>
-        <source id="audioSource" src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <div id="player"></div> <!-- Pemutar YouTube yang disembunyikan -->
 
     <div class="controls">
         <button onclick="prevTrack()">⏮ Prev</button>
-        <button onclick="togglePlayPause()">▶️ Play</button>
+        <button id="playPauseBtn" onclick="togglePlayPause()">▶️ Play</button>
         <button onclick="nextTrack()">⏭ Next</button>
     </div>
 </div>
 
 <script>
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    let player;
     let playlistData = [
-        { name: "Lagu 1", url: "https://www.example.com/music1.mp3" },
-        { name: "Lagu 2", url: "https://www.example.com/music2.mp3" },
-        { name: "Lagu 3", url: "https://www.example.com/music3.mp3" }
+        { name: "aTvJWKu9bMs", videoId: "aTvJWKu9bMs" }, // Tidak mengubah nama
+        // Tambahkan lagu lain di sini
     ];
-    
     let currentTrackIndex = 0;
     let isPlaying = false;
-    const player = document.getElementById('audioPlayer');
-    const source = document.getElementById('audioSource');
-    const playPauseBtn = document.querySelector(".controls button:nth-child(2)");
-    
+    const playPauseBtn = document.getElementById("playPauseBtn");
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '0',
+            width: '0',
+            videoId: playlistData[currentTrackIndex].videoId,
+            playerVars: { 'autoplay': 0, 'controls': 0 },
+            events: {
+                'onReady': function() {
+                    console.log("Player Ready");
+                }
+            }
+        });
+        loadPlaylist();
+    }
+
     function loadPlaylist() {
         let playlist = document.getElementById('playlist');
         playlist.innerHTML = '';
@@ -113,19 +130,18 @@
 
     function playTrack(index) {
         currentTrackIndex = index;
-        source.src = playlistData[index].url;
-        player.load();
-        player.play();
+        player.loadVideoById(playlistData[index].videoId);
+        player.playVideo();
         isPlaying = true;
         updatePlayPauseButton();
     }
 
     function togglePlayPause() {
         if (isPlaying) {
-            player.pause();
+            player.pauseVideo();
             isPlaying = false;
         } else {
-            player.play();
+            player.playVideo();
             isPlaying = true;
         }
         updatePlayPauseButton();
@@ -144,8 +160,6 @@
     function updatePlayPauseButton() {
         playPauseBtn.innerHTML = isPlaying ? "⏸ Pause" : "▶️ Play";
     }
-
-    loadPlaylist();
 </script>
 
 </body>
