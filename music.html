@@ -93,15 +93,15 @@
 
     let player;
     let playlistData = [
-        { name: "Imagination-Shawn mendes", videoId: "aTvJWKu9bMs" }, // Tidak mengubah nama
-        // Tambahkan lagu lain di sini
-        { name: "Dandelion - Ruth B.", videoId: "5gg17XXXiNo" } // Lagu kedua
-        { name: "birds of a father-Billie Eiliesh", videoId: "geKxhmZL8ao" } // Lagu 3
+        { name: "Imagination - Shawn Mendes", videoId: "aTvJWKu9bMs" }, // Lagu pertama
+        { name: "Dandelion - Ruth B.", videoId: "5gg17XXXiNo" }, // Lagu kedua
+        { name: "Birds of a Feather - Billie Eilish", videoId: "geKxhmZL8ao" } // Lagu ketiga
     ];
     let currentTrackIndex = 0;
     let isPlaying = false;
     const playPauseBtn = document.getElementById("playPauseBtn");
 
+    // Fungsi ini dipanggil setelah API YouTube siap
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '0',
@@ -114,12 +114,13 @@
                 }
             }
         });
-        loadPlaylist();
+        loadPlaylist(); // Memuat playlist setelah pemutar siap
     }
 
+    // Memuat playlist ke dalam elemen HTML
     function loadPlaylist() {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';
+        playlist.innerHTML = '';  // Membersihkan playlist yang ada
         playlistData.forEach((track, index) => {
             let li = document.createElement('li');
             li.textContent = track.name;
@@ -130,6 +131,7 @@
         });
     }
 
+    // Fungsi untuk memutar lagu berdasarkan indeks
     function playTrack(index) {
         currentTrackIndex = index;
         player.loadVideoById(playlistData[index].videoId);
@@ -138,6 +140,7 @@
         updatePlayPauseButton();
     }
 
+    // Fungsi untuk tombol Play/Pause
     function togglePlayPause() {
         if (isPlaying) {
             player.pauseVideo();
@@ -149,16 +152,19 @@
         updatePlayPauseButton();
     }
 
+    // Fungsi untuk lagu sebelumnya
     function prevTrack() {
         currentTrackIndex = (currentTrackIndex - 1 + playlistData.length) % playlistData.length;
         playTrack(currentTrackIndex);
     }
 
+    // Fungsi untuk lagu berikutnya
     function nextTrack() {
         currentTrackIndex = (currentTrackIndex + 1) % playlistData.length;
         playTrack(currentTrackIndex);
     }
 
+    // Fungsi untuk memperbarui teks tombol Play/Pause
     function updatePlayPauseButton() {
         playPauseBtn.innerHTML = isPlaying ? "⏸ Pause" : "▶️ Play";
     }
