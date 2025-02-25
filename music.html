@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,7 @@
             background-size: cover;
             color: #fff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -18,50 +19,45 @@
             overflow: hidden;
         }
         .music-player {
-            width: 100%;
-            max-width: 400px;
+            width: 90%;
+            max-width: 500px;
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        h2 {
-            text-align: center;
-            font-size: 28px;
-            margin: 10px 0;
-            color: #fff;
+        .playlist-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
         }
-        p {
-            text-align: center;
-            font-size: 16px;
-            margin-bottom: 20px;
-            opacity: 0.7;
+        .playlist {
+            display: flex;
+            gap: 10px;
         }
-        audio {
-            width: 100%;
+        .playlist li {
+            cursor: pointer;
+            padding: 15px;
+            background-color: #333;
             border-radius: 15px;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
         }
         .controls button {
             background-color: #3a3a3c;
             color: #fff;
             border: none;
-            padding: 12px 25px;
+            padding: 12px 20px;
             border-radius: 50px;
-            margin: 0 15px;
             cursor: pointer;
-        }
-        .playlist {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-        .playlist li {
-            cursor: pointer;
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #333;
-            border-radius: 15px;
         }
     </style>
 </head>
@@ -71,106 +67,85 @@
     <h2>Music Player</h2>
     <p>Enjoy your playlist ♥️</p>
 
+    <div class="playlist-container">
+        <ul class="playlist" id="playlist">
+            <!-- Playlist akan dibuat secara dinamis -->
+        </ul>
+    </div>
+
     <audio id="audioPlayer" controls>
         <source id="audioSource" src="" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <div class="controls">
-        <button onclick="playMusic()">Play</button>
-        <button onclick="pauseMusic()">Pause</button>
+        <button onclick="prevTrack()">⏮ Prev</button>
+        <button onclick="togglePlayPause()">▶️ Play</button>
+        <button onclick="nextTrack()">⏭ Next</button>
     </div>
-
-    <h3>Playlist</h3>
-    <ul class="playlist" id="playlist">
-        <!-- Playlist will be dynamically generated here -->
-    </ul>
 </div>
 
-<script src="https://apis.google.com/js/api.js"></script>
 <script>
-    let CLIENT_ID = '232145446869-4afrast4f9tu2op290idsdd86hg2iud8.apps.googleusercontent.com';  // Your Client ID
-    let API_KEY = 'AIzaSyA17oe-L1_bNLxCzGf1HMrMIWa6sD0gCG0';  // Replace with your API Key
-    let FOLDER_ID = '16pF80Akm48g53eWJaLz9nQYdJCS819lU';  // Folder ID from your Google Drive link
-    let SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
-
-    function loadClient() {
-        gapi.client.setApiKey(API_KEY);
-        return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v3/rest")
-            .then(function() {
-                listFiles();
-            }, function(error) {
-                console.error("Error loading GAPI client", error);
-            });
-    }
-
-    function authenticate() {
-        return gapi.auth2.getAuthInstance()
-            .signIn({scope: SCOPES})
-            .then(function() {
-                loadClient();
-            }, function(error) {
-                console.error("Error signing in", error);
-            });
-    }
-
-    function initApi() {
-        gapi.load("client:auth2", function() {
-            gapi.auth2.init({client_id: CLIENT_ID});
-        });
-    }
-
-    function listFiles() {
-        gapi.client.drive.files.list({
-            q: `'${FOLDER_ID}' in parents`,
-            fields: 'files(id, name, mimeType)',
-        }).then(function(response) {
-            let files = response.result.files;
-            console.log("Files: ", files);  // Debugging
-            if (files && files.length > 0) {
-                createPlaylist(files);
-            } else {
-                console.log("No files found.");
-            }
-        }, function(error) {
-            console.error("Error listing files: ", error); // Debugging
-        });
-    }
-
-    function createPlaylist(files) {
+    let playlistData = [
+        { name: "Lagu 1", url: "https://www.example.com/music1.mp3" },
+        { name: "Lagu 2", url: "https://www.example.com/music2.mp3" },
+        { name: "Lagu 3", url: "https://www.example.com/music3.mp3" }
+    ];
+    
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    const player = document.getElementById('audioPlayer');
+    const source = document.getElementById('audioSource');
+    const playPauseBtn = document.querySelector(".controls button:nth-child(2)");
+    
+    function loadPlaylist() {
         let playlist = document.getElementById('playlist');
-        playlist.innerHTML = '';  // Clear the existing playlist
-        files.forEach(function(file) {
-            if (file.mimeType === 'audio/mpeg') {
-                let li = document.createElement('li');
-                li.textContent = file.name;
-                li.onclick = function() {
-                    loadMusic(`https://drive.google.com/uc?export=download&id=${file.id}`);
-                };
-                playlist.appendChild(li);
-            }
+        playlist.innerHTML = '';
+        playlistData.forEach((track, index) => {
+            let li = document.createElement('li');
+            li.textContent = track.name;
+            li.onclick = function() {
+                playTrack(index);
+            };
+            playlist.appendChild(li);
         });
     }
 
-    function loadMusic(url) {
-        let player = document.getElementById('audioPlayer');
-        let source = document.getElementById('audioSource');
-        source.src = url;
+    function playTrack(index) {
+        currentTrackIndex = index;
+        source.src = playlistData[index].url;
         player.load();
         player.play();
+        isPlaying = true;
+        updatePlayPauseButton();
     }
 
-    function playMusic() {
-        const player = document.getElementById('audioPlayer');
-        player.play();
+    function togglePlayPause() {
+        if (isPlaying) {
+            player.pause();
+            isPlaying = false;
+        } else {
+            player.play();
+            isPlaying = true;
+        }
+        updatePlayPauseButton();
     }
 
-    function pauseMusic() {
-        const player = document.getElementById('audioPlayer');
-        player.pause();
+    function prevTrack() {
+        currentTrackIndex = (currentTrackIndex - 1 + playlistData.length) % playlistData.length;
+        playTrack(currentTrackIndex);
     }
 
-    authenticate();  // Start the authentication process when the page loads
+    function nextTrack() {
+        currentTrackIndex = (currentTrackIndex + 1) % playlistData.length;
+        playTrack(currentTrackIndex);
+    }
+
+    function updatePlayPauseButton() {
+        playPauseBtn.innerHTML = isPlaying ? "⏸ Pause" : "▶️ Play";
+    }
+
+    loadPlaylist();
 </script>
 
 </body>
