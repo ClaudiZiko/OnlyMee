@@ -87,5 +87,33 @@
       isPlaying = true;
     }
   }
+
+  // Preload semua gambar background
+  const backgroundImages = [
+    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Screenshot_2025-02-20-06-51-14-70_1c337646f29875672b5a61192b9010f9.jpg',
+    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/IMG_20250220_234820.png',
+    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image%20(1).png',
+    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image.png'
+  ];
+
+  let loadedImages = [];
+  let currentImageIndex = 0;
+
+  function preloadImages() {
+    backgroundImages.forEach(src => {
+      let img = new Image();
+      img.src = src;
+      loadedImages.push(img);
+    });
+  }
+
+  function changeBackgroundImage() {
+    document.body.style.backgroundImage = `url(${backgroundImages[currentImageIndex]})`;
+    currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+  }
+
+  preloadImages(); // Muat semua gambar di awal
+  setInterval(changeBackgroundImage, 5000);
+  changeBackgroundImage(); // Set gambar awal
 </script></body>
 </html>
