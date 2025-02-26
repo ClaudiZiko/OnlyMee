@@ -67,6 +67,30 @@
       color: #fff;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
     }
+
+    /* Media Queries untuk tampilan di layar yang lebih besar */
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+      .music-player {
+        width: 40%;
+        max-width: 600px;
+      }
+    }
+
+    /* Media Queries untuk desktop (lebih besar dari 1024px) */
+    @media (min-width: 1024px) {
+      .music-player {
+        width: 35%;
+        padding: 30px;
+      }
+      .playlist li {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
