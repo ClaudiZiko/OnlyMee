@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +40,10 @@
       background-color: #333;
       border-radius: 15px;
       text-align: center;
+      margin: 5px 0;
+    }
+    .playlist li:hover {
+      background-color: #555;
     }
     .controls {
       display: flex;
@@ -64,56 +69,93 @@
     }
   </style>
 </head>
-<body><div class="music-player">
-  <h2>Music Player</h2>
-  <p>Enjoy your playlist ♥️</p>  <div class="playlist-container">
-    <ul class="playlist" id="playlist"></ul>
-  </div>  <audio id="audioPlayer" controls>
-    <source src="https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@ClaudiZikoMyne/Media/Music/Imagination%20-Shawn%20Mendes%20(lyrics).mp3" type="audio/mpeg">
-    Browsermu tidak mendukung elemen audio.
-  </audio>  <div class="controls">
-    <button id="playPauseBtn" onclick="togglePause()">⏸ Pause</button>
+<body>
+  <div class="music-player">
+    <h2>Music Player</h2>
+    <p>Enjoy your playlist ♥️</p>
+    <div class="playlist-container">
+      <ul class="playlist" id="playlist"></ul>
+    </div>
+    <audio id="audioPlayer" controls>
+      <source src="" type="audio/mpeg">
+      Browsermu tidak mendukung elemen audio.
+    </audio>
+    <div class="controls">
+      <button id="playPauseBtn" onclick="togglePause()">⏸ Pause</button>
+    </div>
   </div>
-</div><script>
-  let audioPlayer = document.getElementById("audioPlayer");
-  let isPlaying = false;
 
-  function togglePause() {
-    if (isPlaying) {
-      audioPlayer.pause();
-      isPlaying = false;
-    } else {
+  <script>
+    let audioPlayer = document.getElementById("audioPlayer");
+    let isPlaying = false;
+
+    function togglePause() {
+      if (isPlaying) {
+        audioPlayer.pause();
+        isPlaying = false;
+      } else {
+        audioPlayer.play();
+        isPlaying = true;
+      }
+    }
+
+    // Playlist data
+    const playlist = [
+      { title: "Imagination - Shawn Mendes", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@ClaudiZikoMyne/Media/Music/Imagination%20-Shawn%20Mendes%20(lyrics).mp3" },
+      { title: "Song 2", src: "https://www.example.com/song2.mp3" },
+      { title: "Song 3", src: "https://www.example.com/song3.mp3" }
+    ];
+
+    // Menampilkan playlist
+    function loadPlaylist() {
+      const playlistContainer = document.getElementById("playlist");
+      playlist.forEach((song, index) => {
+        const li = document.createElement("li");
+        li.textContent = song.title;
+        li.onclick = function() {
+          playSong(index);
+        };
+        playlistContainer.appendChild(li);
+      });
+    }
+
+    // Memutar lagu dari playlist
+    function playSong(index) {
+      audioPlayer.src = playlist[index].src;
       audioPlayer.play();
       isPlaying = true;
+      document.getElementById("playPauseBtn").textContent = "⏸ Pause";
     }
-  }
 
-  // Preload semua gambar background
-  const backgroundImages = [
-    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Screenshot_2025-02-20-06-51-14-70_1c337646f29875672b5a61192b9010f9.jpg',
-    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/IMG_20250220_234820.png',
-    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image%20(1).png',
-    'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image.png'
-  ];
+    // Preload semua gambar background
+    const backgroundImages = [
+      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Screenshot_2025-02-20-06-51-14-70_1c337646f29875672b5a61192b9010f9.jpg',
+      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/IMG_20250220_234820.png',
+      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image%20(1).png',
+      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image.png'
+    ];
 
-  let loadedImages = [];
-  let currentImageIndex = 0;
+    let loadedImages = [];
+    let currentImageIndex = 0;
 
-  function preloadImages() {
-    backgroundImages.forEach(src => {
-      let img = new Image();
-      img.src = src;
-      loadedImages.push(img);
-    });
-  }
+    function preloadImages() {
+      backgroundImages.forEach(src => {
+        let img = new Image();
+        img.src = src;
+        loadedImages.push(img);
+      });
+    }
 
-  function changeBackgroundImage() {
-    document.body.style.backgroundImage = `url(${backgroundImages[currentImageIndex]})`;
-    currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-  }
+    function changeBackgroundImage() {
+      document.body.style.backgroundImage = `url(${backgroundImages[currentImageIndex]})`;
+      currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+    }
 
-  preloadImages(); // Muat semua gambar di awal
-  setInterval(changeBackgroundImage, 5000);
-  changeBackgroundImage(); // Set gambar awal
-</script></body>
+    preloadImages(); // Muat semua gambar di awal
+    setInterval(changeBackgroundImage, 5000);
+    changeBackgroundImage(); // Set gambar awal
+
+    loadPlaylist(); // Muat playlist saat halaman dimuat
+  </script>
+</body>
 </html>
