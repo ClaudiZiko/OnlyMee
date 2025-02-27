@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futuristic Music Player</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      transition: background 2s ease-in-out;
+    }
+    .music-player {
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+    }
+    .playlist-container {
+      max-height: 150px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #555 #222;
+    }
+    .playlist-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .playlist-container::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+    .playlist li {
+      cursor: pointer;
+      padding: 15px;
+      background-color: #333;
+      border-radius: 15px;
+      text-align: center;
+      margin: 5px 0;
+    }
+    .playlist li:hover {
+      background-color: #555;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .controls button {
+      background-color: #3a3a3c;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+    #player {
+      display: none;
+    }
+    h2, p {
+      text-align: center;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="music-player">
+    <h2>Music Player</h2>
+    <p>Enjoy your playlist ♥️</p>
+    <div class="playlist-container">
+      <ul class="playlist" id="playlist"></ul>
+    </div>
+    <audio id="audioPlayer" controls>
+      <source src="" type="audio/mpeg">
+      Browsermu tidak mendukung elemen audio.
+    </audio>
+    <div class="controls">
+      <button id="playPauseBtn" onclick="togglePause()">⏸ Pause</button>
+    </div>
+  </div>
+
+  <script>
+    let audioPlayer = document.getElementById("audioPlayer");
+    let isPlaying = false;
+
+    function togglePause() {
+      if (isPlaying) {
+        audioPlayer.pause();
+        isPlaying = false;
+      } else {
+        audioPlayer.play();
+        isPlaying = true;
+      }
+    }
+
+    const playlist = [
+      { title: "Imagination - Shawn Mendes", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Imagination%20-%20Shawn%20Mendes%20(lyrics).mp3" },
+      { title: "Dandelions - Ruth B.", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
+      { title: "Billie Eilish - BIRDS OF A FEATHER", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Billie%20Eilish%20-%20BIRDS%20OF%20A%20FEATHER.mp3" },
+      { title: "Katy Perry - Unconditionally", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Katy%20Perry%20-%20Unconditionally%20(Lyrics).mp3" },
+      { title: "Taylor Swift - Enchanted", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" }
+    ];
+
+    function loadPlaylist() {
+      const playlistContainer = document.getElementById("playlist");
+      playlistContainer.innerHTML = ""; // Bersihkan daftar sebelum menambah
+      playlist.forEach((song, index) => {
+        const li = document.createElement("li");
+        li.textContent = song.title;
+        li.onclick = function() {
+          playSong(index);
+        };
+        playlistContainer.appendChild(li);
+      });
+    }
+
+    function playSong(index) {
+      audioPlayer.src = playlist[index].src;
+      audioPlayer.play();
+      isPlaying = true;
+      document.getElementById("playPauseBtn").textContent = "⏸ Pause";
+    }
+
+    // cache query unik
+    playlist.forEach(song => {
+      song.src += "?nocache=" + new
+      Date().getTime();
+    });
+
+    // MUAT PLAYLIST SETELAH URL DIPERBAHARUi
+    loadPlaylist();
+  </script>
+</body>
+</html>
