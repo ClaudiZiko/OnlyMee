@@ -74,30 +74,6 @@
       color: #fff;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
     }
-
-    /* Media Queries untuk tampilan di layar yang lebih besar */
-    @media (min-width: 768px) {
-      body {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-      .music-player {
-        width: 40%;
-        max-width: 600px;
-      }
-    }
-
-    /* Media Queries untuk desktop (lebih besar dari 1024px) */
-    @media (min-width: 1024px) {
-      .music-player {
-        width: 35%;
-        padding: 30px;
-      }
-      .playlist li {
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -130,24 +106,17 @@
       }
     }
 
-    // Playlist data
     const playlist = [
-      { title: "Imagination - Shawn Mendes", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@ClaudiZikoMyne/Media/Music/Imagination%20-Shawn%20Mendes%20(lyrics).mp3" },
-      { title: "Dandelions - Ruth B.", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
-      { title: "Billie Eilish - BIRDS OF A FEATHER", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Music/Billie%20Eilish%20-%20BIRDS%20OF%20A%20FEATHER.mp3" },
-      { title: "Katy Perry - Unconditionally", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Music/Katy%20Perry%20-%20Unconditionally%20(Lyrics).mp3" },
-      { title: "Taylor Swift - Enchanted", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" },
+      { title: "Imagination - Shawn Mendes", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Imagination%20-%20Shawn%20Mendes%20(lyrics).mp3" },
+      { title: "Dandelions - Ruth B.", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
+      { title: "Billie Eilish - BIRDS OF A FEATHER", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Billie%20Eilish%20-%20BIRDS%20OF%20A%20FEATHER.mp3" },
+      { title: "Katy Perry - Unconditionally", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Katy%20Perry%20-%20Unconditionally%20(Lyrics).mp3" },
+      { title: "Taylor Swift - Enchanted", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" }
     ];
 
-    // Tambahkan kode debug di sini
-    playlist.forEach((song, inde) => {
-      console.log('Index: ${index}, Judul: $
-      {song,title}, URL: ${song.src}');
-    });
-
-    // Menampilkan playlist
     function loadPlaylist() {
       const playlistContainer = document.getElementById("playlist");
+      playlistContainer.innerHTML = ""; // Bersihkan daftar sebelum menambah
       playlist.forEach((song, index) => {
         const li = document.createElement("li");
         li.textContent = song.title;
@@ -158,7 +127,6 @@
       });
     }
 
-    // Memutar lagu dari playlist
     function playSong(index) {
       audioPlayer.src = playlist[index].src;
       audioPlayer.play();
@@ -166,35 +134,7 @@
       document.getElementById("playPauseBtn").textContent = "⏸ Pause";
     }
 
-    // Preload semua gambar background
-    const backgroundImages = [
-      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/Screenshot_2025-02-20-06-51-14-70_1c337646f29875672b5a61192b9010f9.jpg',
-      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/IMG_20250220_234820.png',
-      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image%20(1).png',
-      'https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/ClaudiZikoMyne/Media/image.png'
-    ];
-
-    let loadedImages = [];
-    let currentImageIndex = 0;
-
-    function preloadImages() {
-      backgroundImages.forEach(src => {
-        let img = new Image();
-        img.src = src;
-        loadedImages.push(img);
-      });
-    }
-
-    function changeBackgroundImage() {
-      document.body.style.backgroundImage = `url(${backgroundImages[currentImageIndex]})`;
-      currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-    }
-
-    preloadImages(); // Muat semua gambar di awal
-    setInterval(changeBackgroundImage, 5000);
-    changeBackgroundImage(); // Set gambar awal
-
-    loadPlaylist(); // Muat playlist saat halaman dimuat
+    loadPlaylist();
   </script>
 </body>
 </html>
