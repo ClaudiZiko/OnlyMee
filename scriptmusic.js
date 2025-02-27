@@ -6,11 +6,11 @@ function togglePause() {
   if (isPlaying) {
     audioPlayer.pause();
     isPlaying = false;
-    document.getElementById("playPauseBtn").textContent = "⏸ Pause";
+    document.getElementById("playPauseBtn").textContent = "▶️ Play"; // Tombol berubah menjadi Play
   } else {
-    audioPlayer.play();
+    audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error));
     isPlaying = true;
-    document.getElementById("playPauseBtn").textContent = "⏸ Pause";
+    document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol berubah menjadi Pause
   }
 }
 
@@ -37,17 +37,18 @@ function loadPlaylist() {
 
 function playSong(index) {
   audioPlayer.src = playlist[index].src;
-  audioPlayer.load(); // Tambahkan ini
-  audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error)); // Log error kalau autoplay diblokir
+  audioPlayer.load(); // Memuat ulang audio
+  audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error)); // Log error jika autoplay diblokir
   isPlaying = true;
-  document.getElementById("playPauseBtn").textContent = "⏸ Pause";
+  document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol berubah menjadi Pause
 }
-// cache query unik
+
+// Cache query unik
 playlist.forEach(song => {
   song.src += "?nocache=" + new Date().getTime();
 });
 
-// MUAT PLAYLIST SETELAH URL DIPERBAHARUi
+// MUAT PLAYLIST SETELAH URL DIPERBAHARUI
 loadPlaylist();
 
 // Slideshow Logic
