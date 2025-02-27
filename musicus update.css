@@ -1,0 +1,108 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: background 2s ease-in-out;
+  }
+  
+  /* Slideshow Styles */
+  .mySlides {
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .slideshow-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .fade {
+    animation-name: fade;
+    animation-duration: 2s;
+  }
+  
+  @keyframes fade {
+    from { opacity: 0.4 }
+    to { opacity: 1 }
+  }
+  
+  /* Music Player Styles */
+  .music-player {
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 10;
+  }
+  
+  .playlist-container {
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #222;
+  }
+  
+  .playlist-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .playlist-container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+  }
+  
+  .playlist li {
+    cursor: pointer;
+    padding: 15px;
+    background-color: #333;
+    border-radius: 15px;
+    text-align: center;
+    margin: 5px 0;
+  }
+  
+  .playlist li:hover {
+    background-color: #555;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .controls button {
+    background-color: #3a3a3c;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+  
+  #player {
+    display: none;
+  }
+  
+  h2, p {
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+  
