@@ -36,11 +36,20 @@ function loadPlaylist() {
 }
 
 function playSong(index) {
+  // Set source audio dari playlist
   audioPlayer.src = playlist[index].src;
-  audioPlayer.load(); // Memuat ulang audio
-  audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error)); // Log error jika autoplay diblokir
+
+  // Pastikan audio dimuat ulang sebelum dimainkan
+  audioPlayer.load();
+
+  // Mulai pemutaran lagu
+  audioPlayer.play().catch(error => {
+    console.log("Autoplay Blocked: ", error); // Log error jika autoplay diblokir
+  });
+
+  // Perbarui status pemutaran
   isPlaying = true;
-  document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol berubah menjadi Pause
+  document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol Pause
 }
 
 // Cache query unik
