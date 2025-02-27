@@ -15,11 +15,11 @@ function togglePause() {
 }
 
 const playlist = [
-  { title: "Imagination - Shawn Mendes", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Imagination%20-%20Shawn%20Mendes%20(lyrics).mp3" },
-  { title: "Dandelions - Ruth B.", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
-  { title: "Billie Eilish - BIRDS OF A FEATHER", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Billie%20Eilish%20-%20BIRDS%20OF%20A%20FEATHER.mp3" },
-  { title: "Katy Perry - Unconditionally", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Katy%20Perry%20-%20Unconditionally%20(Lyrics).mp3" },
-  { title: "Taylor Swift - Enchanted", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" },
+  { title: "Imagination - Shawn Mendes", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Imagination%20-%20Shawn%20Mendes%20(lyrics).mp3" },
+  { title: "Dandelions - Ruth B.", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
+  { title: "Billie Eilish - BIRDS OF A FEATHER", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Billie%20Eilish%20-%20BIRDS%20OF%20A%20FEATHER.mp3" },
+  { title: "Katy Perry - Unconditionally", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Katy%20Perry%20-%20Unconditionally%20(Lyrics).mp3" },
+  { title: "Taylor Swift - Enchanted", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" }
 ];
 
 function loadPlaylist() {
