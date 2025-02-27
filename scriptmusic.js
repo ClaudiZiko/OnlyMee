@@ -1,19 +1,27 @@
 // Music Player Logic
 let audioPlayer = document.getElementById("audioPlayer");
 let isPlaying = false;
+let currentSongIndex = -1; // Untuk melacak lagu yang sedang diputar
 
+// Fungsi untuk toggle play/pause
 function togglePause() {
   if (isPlaying) {
     audioPlayer.pause();
     isPlaying = false;
     document.getElementById("playPauseBtn").textContent = "▶️ Play"; // Tombol berubah menjadi Play
   } else {
-    audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error));
-    isPlaying = true;
-    document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol berubah menjadi Pause
+    // Jika tidak ada lagu yang sedang diputar, pilih lagu pertama atau yang aktif
+    if (currentSongIndex === -1) {
+      playSong(0);
+    } else {
+      audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error));
+      isPlaying = true;
+      document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol berubah menjadi Pause
+    }
   }
 }
 
+// Playlist lagu
 const playlist = [
   { title: "Imagination - Shawn Mendes", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Imagination%20-%20Shawn%20Mendes%20(lyrics).mp3" },
   { title: "Dandelions - Ruth B.", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Ruth%20B.%20-%20Dandelions%20(Lyrics).mp3" },
@@ -22,6 +30,7 @@ const playlist = [
   { title: "Taylor Swift - Enchanted", src: "https://cdn.jsdelivr.net/gh/ClaudiZiko/OnlyMee@main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" }
 ];
 
+// Memuat playlist
 function loadPlaylist() {
   const playlistContainer = document.getElementById("playlist");
   playlistContainer.innerHTML = ""; // Bersihkan daftar sebelum menambah
@@ -35,22 +44,32 @@ function loadPlaylist() {
   });
 }
 
+// Fungsi untuk memainkan lagu
 function playSong(index) {
-  // Set source audio dari playlist
-  audioPlayer.src = playlist[index].src;
+  if (currentSongIndex === index) {
+    // Jika lagu yang sama dipilih, toggle play/pause
+    togglePause();
+  } else {
+    // Set source audio dari playlist
+    audioPlayer.src = playlist[index].src;
 
-  // Pastikan audio dimuat ulang sebelum dimainkan
-  audioPlayer.load();
+    // Pastikan audio dimuat ulang sebelum dimainkan
+    audioPlayer.load();
 
-  // Mulai pemutaran lagu
-  audioPlayer.play().catch(error => {
-    console.log("Autoplay Blocked: ", error); // Log error jika autoplay diblokir
-  });
+    // Mulai pemutaran lagu
+    audioPlayer.play().catch(error => {
+      console.log("Autoplay Blocked: ", error); // Log error jika autoplay diblokir
+    });
 
-  // Perbarui status pemutaran
-  isPlaying = true;
-  document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol Pause
+    // Perbarui status pemutaran
+    isPlaying = true;
+    currentSongIndex = index;
+    document.getElementById("playPauseBtn").textContent = "⏸ Pause"; // Tombol Pause
+  }
 }
+
+// Memanggil fungsi loadPlaylist saat halaman dimuat
+loadPlaylist();
 
 // Cache query unik
 playlist.forEach(song => {
