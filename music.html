@@ -132,6 +132,12 @@
       { title: "Taylor Swift - Enchanted", src: "https://raw.githubusercontent.com/ClaudiZiko/OnlyMee/main/Media/Music/Taylor%20Swift%20-%20Enchanted.mp3" },
     ];
 
+    // Tambahkan kode debug di sini
+    playlist.forEach((song, inde) => {
+      console.log('Index: ${index}, Judul: $
+      {song,title}, URL: ${song.src}');
+    });
+
     // Menampilkan playlist
     function loadPlaylist() {
       const playlistContainer = document.getElementById("playlist");
