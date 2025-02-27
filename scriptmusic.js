@@ -37,12 +37,11 @@ function loadPlaylist() {
 
 function playSong(index) {
   audioPlayer.src = playlist[index].src;
-		audioPlayer.load(); // Tambahkan ini
-  audioPlayer.play();
+  audioPlayer.load(); // Tambahkan ini
+  audioPlayer.play().catch(error => console.log("Autoplay Blocked: ", error)); // Log error kalau autoplay diblokir
   isPlaying = true;
   document.getElementById("playPauseBtn").textContent = "⏸ Pause";
 }
-
 // cache query unik
 playlist.forEach(song => {
   song.src += "?nocache=" + new Date().getTime();
