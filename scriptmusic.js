@@ -37,6 +37,7 @@ function loadPlaylist() {
 
 function playSong(index) {
   audioPlayer.src = playlist[index].src;
+		audioPlayer.load(); // Tambahkan ini
   audioPlayer.play();
   isPlaying = true;
   document.getElementById("playPauseBtn").textContent = "⏸ Pause";
